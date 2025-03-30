@@ -1,0 +1,57 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ post.title }} | {% endblock %}
+
+{% block content %}
+    <section class="hero ">
+        <div class="hero-body">
+            {% if post.image %}
+                <figure class="image mb-6">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                </figure>
+            {% endif %}
+            <div class="container">
+                <section class="section">
+                    <div class="columns">
+                        <div class="column is-8 is-offset-2">
+                                <div class="content is-medium">
+                                        <h2 class="subtitle is-4">{{ post.created_at | timesince  }} ago</h2>
+                                        <h1 class="title">{{ post.title }}</h1>
+                                        <p><strong>{{ post.intro }}</strong></p>
+                                        <p>{{ post.body }}</p>
+
+                                        <p><small>Category: <a href="{% url 'category_detail' post.category.slug %}"> {{ post.category }}</a></small></p>
+
+                                        <hr>
+
+                                        <h2 class="subtitle is-4">Comments</h2>
+                                        <form method="post">
+                                            {{ form.as_p }}
+                                            {% csrf_token %}
+                                            <div class="field">
+                                                <div class="control">
+                                                    <button type="submit" class="button is-link">Submit comment</button>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                        <hr>
+                                        {% for comment in post.comments.all %}
+                                            <article class="media box">
+                                                <div class="media-content">
+                                                    <strong>{{ comment.name }}</strong> <small class="is-pulled-right">{{ comment.created_at | timesince }} ago</small>
+                                                    <p>{{ comment.body }}</p>
+                                                </div>
+                                            </article>
+                                        {% empty %}
+                                            <p>No comments yet.</p>
+                                        {% endfor %}
+
+                                </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
+{% endblock %}
